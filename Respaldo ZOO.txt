@@ -1,0 +1,209 @@
+PGDMP                          z           FinanzasZOO    14.1    14.1 -    7           0    0    ENCODING    ENCODING        SET client_encoding = 'UTF8';
+                      false            8           0    0 
+   STDSTRINGS 
+   STDSTRINGS     (   SET standard_conforming_strings = 'on';
+                      false            9           0    0 
+   SEARCHPATH 
+   SEARCHPATH     8   SELECT pg_catalog.set_config('search_path', '', false);
+                      false            :           1262    16669    FinanzasZOO    DATABASE     j   CREATE DATABASE "FinanzasZOO" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'Spanish_Mexico.1252';
+    DROP DATABASE "FinanzasZOO";
+                postgres    false            ;           0    0    DATABASE "FinanzasZOO"    COMMENT     N   COMMENT ON DATABASE "FinanzasZOO" IS 'Proyecto Seminaro de Bases de Datos I';
+                   postgres    false    3386            ﬁ            1255    24990    valida_cant_trabajadores()    FUNCTION     "  CREATE FUNCTION public.valida_cant_trabajadores() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+if  new.cant_trab < 10 or new.cant_trab > 50 then
+raise exception 'Debe haber obligatoriamente m√°s de 10 trabajadores y l√≠mite 50 en cualquier area';
+else
+RETURN NEW;
+end if;
+end;
+ $$;
+ 1   DROP FUNCTION public.valida_cant_trabajadores();
+       public          postgres    false            ‹            1255    24986    valida_edad_empleado()    FUNCTION     ‹   CREATE FUNCTION public.valida_edad_empleado() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+if  new.edad < 18 or new.edad > 70  then
+raise exception 'No es apto para el empleo';
+else
+RETURN NEW;
+end if;
+end;
+ $$;
+ -   DROP FUNCTION public.valida_edad_empleado();
+       public          postgres    false            ›            1255    24988    valida_horas_lab()    FUNCTION     ÷   CREATE FUNCTION public.valida_horas_lab() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+if  new.horas_lab is null then
+raise exception 'Este valor no puede quedar vac√≠o';
+else
+RETURN NEW;
+end if;
+end;
+ $$;
+ )   DROP FUNCTION public.valida_horas_lab();
+       public          postgres    false            ÿ            1259    16710    Tiene Derecho    TABLE     í   CREATE TABLE public."Tiene Derecho" (
+    id_emp integer NOT NULL,
+    id_med integer NOT NULL,
+    confirmacion character varying(2) NOT NULL
+);
+ #   DROP TABLE public."Tiene Derecho";
+       public         heap    postgres    false            ‘            1259    16685 	   actividad    TABLE     ∆   CREATE TABLE public.actividad (
+    id_act integer NOT NULL,
+    nom_act character varying(35) NOT NULL,
+    horas_lab integer NOT NULL,
+    id_emp integer NOT NULL,
+    id_area integer NOT NULL
+);
+    DROP TABLE public.actividad;
+       public         heap    postgres    false            ’            1259    16690    area    TABLE     •   CREATE TABLE public.area (
+    id_area integer NOT NULL,
+    nom_area character varying(30) NOT NULL,
+    sector integer NOT NULL,
+    cant_trab integer NOT NULL
+);
+    DROP TABLE public.area;
+       public         heap    postgres    false            —            1259    16670    empleado    TABLE     ∞   CREATE TABLE public.empleado (
+    id_emp integer NOT NULL,
+    nom_emp character varying(40) NOT NULL,
+    puesto character varying(35) NOT NULL,
+    edad integer NOT NULL
+);
+    DROP TABLE public.empleado;
+       public         heap    postgres    false            “            1259    16675    sueldo    TABLE     ‡   CREATE TABLE public.sueldo (
+    id_sueldo integer NOT NULL,
+    cant_su character varying(10) NOT NULL,
+    rfc character varying(13) NOT NULL,
+    prestaciones character varying(2) NOT NULL,
+    id_emp integer NOT NULL
+);
+    DROP TABLE public.sueldo;
+       public         heap    postgres    false            €            1259    25000    empleado_sueldo    VIEW     Æ   CREATE VIEW public.empleado_sueldo AS
+ SELECT e.nom_emp,
+    e.puesto,
+    s.cant_su,
+    s.rfc
+   FROM public.empleado e,
+    public.sueldo s
+  WHERE (e.id_emp = s.id_emp);
+ "   DROP VIEW public.empleado_sueldo;
+       public          postgres    false    209    210    210    210    209    209            ⁄            1259    24996    horas_laboradas    VIEW     Ÿ   CREATE VIEW public.horas_laboradas AS
+ SELECT actividad.id_act,
+    actividad.nom_act,
+    actividad.horas_lab,
+    actividad.id_emp,
+    actividad.id_area
+   FROM public.actividad
+  WHERE (actividad.horas_lab > 30);
+ "   DROP VIEW public.horas_laboradas;
+       public          postgres    false    212    212    212    212    212            Ÿ            1259    24992    info_rapida_empleado    VIEW     Ö   CREATE VIEW public.info_rapida_empleado AS
+ SELECT empleado.nom_emp,
+    empleado.puesto,
+    empleado.edad
+   FROM public.empleado;
+ '   DROP VIEW public.info_rapida_empleado;
+       public          postgres    false    209    209    209            ◊            1259    16700    material    TABLE     ‘   CREATE TABLE public.material (
+    id_mat integer NOT NULL,
+    nom_mat character varying(40) NOT NULL,
+    costo numeric(10,0) NOT NULL,
+    marca character varying(25) NOT NULL,
+    id_area integer NOT NULL
+);
+    DROP TABLE public.material;
+       public         heap    postgres    false            ÷            1259    16695    servicio    TABLE     Ã   CREATE TABLE public.servicio (
+    id_serv integer NOT NULL,
+    tipo character varying(20) NOT NULL,
+    fecha_venc date NOT NULL,
+    total_pagar numeric(10,0) NOT NULL,
+    id_area integer NOT NULL
+);
+    DROP TABLE public.servicio;
+       public         heap    postgres    false            ”            1259    16680 
+   serviciosm    TABLE     Ì   CREATE TABLE public.serviciosm (
+    id_med integer NOT NULL,
+    no_clinica integer NOT NULL,
+    nss character varying(11) NOT NULL,
+    serv_esp character varying(2) NOT NULL,
+    turno "char" NOT NULL,
+    id_emp integer NOT NULL
+);
+    DROP TABLE public.serviciosm;
+       public         heap    postgres    false            4          0    16710    Tiene Derecho 
+   TABLE DATA           G   COPY public."Tiene Derecho" (id_emp, id_med, confirmacion) FROM stdin;
+    public          postgres    false    216   ^7       0          0    16685 	   actividad 
+   TABLE DATA           P   COPY public.actividad (id_act, nom_act, horas_lab, id_emp, id_area) FROM stdin;
+    public          postgres    false    212   {7       1          0    16690    area 
+   TABLE DATA           D   COPY public.area (id_area, nom_area, sector, cant_trab) FROM stdin;
+    public          postgres    false    213   ò7       -          0    16670    empleado 
+   TABLE DATA           A   COPY public.empleado (id_emp, nom_emp, puesto, edad) FROM stdin;
+    public          postgres    false    209    7       3          0    16700    material 
+   TABLE DATA           J   COPY public.material (id_mat, nom_mat, costo, marca, id_area) FROM stdin;
+    public          postgres    false    215   k8       2          0    16695    servicio 
+   TABLE DATA           S   COPY public.servicio (id_serv, tipo, fecha_venc, total_pagar, id_area) FROM stdin;
+    public          postgres    false    214   à8       /          0    16680 
+   serviciosm 
+   TABLE DATA           V   COPY public.serviciosm (id_med, no_clinica, nss, serv_esp, turno, id_emp) FROM stdin;
+    public          postgres    false    211   •8       .          0    16675    sueldo 
+   TABLE DATA           O   COPY public.sueldo (id_sueldo, cant_su, rfc, prestaciones, id_emp) FROM stdin;
+    public          postgres    false    210   ⁄8       ç           2606    16689    actividad Actividad_pkey 
+   CONSTRAINT     \   ALTER TABLE ONLY public.actividad
+    ADD CONSTRAINT "Actividad_pkey" PRIMARY KEY (id_act);
+ D   ALTER TABLE ONLY public.actividad DROP CONSTRAINT "Actividad_pkey";
+       public            postgres    false    212            è           2606    16694    area Area_pkey 
+   CONSTRAINT     S   ALTER TABLE ONLY public.area
+    ADD CONSTRAINT "Area_pkey" PRIMARY KEY (id_area);
+ :   ALTER TABLE ONLY public.area DROP CONSTRAINT "Area_pkey";
+       public            postgres    false    213            á           2606    16674    empleado Empleado_pkey 
+   CONSTRAINT     Z   ALTER TABLE ONLY public.empleado
+    ADD CONSTRAINT "Empleado_pkey" PRIMARY KEY (id_emp);
+ B   ALTER TABLE ONLY public.empleado DROP CONSTRAINT "Empleado_pkey";
+       public            postgres    false    209            ì           2606    16704    material Material_pkey 
+   CONSTRAINT     Z   ALTER TABLE ONLY public.material
+    ADD CONSTRAINT "Material_pkey" PRIMARY KEY (id_mat);
+ B   ALTER TABLE ONLY public.material DROP CONSTRAINT "Material_pkey";
+       public            postgres    false    215            ã           2606    16684    serviciosm Servicios Med_pkey 
+   CONSTRAINT     a   ALTER TABLE ONLY public.serviciosm
+    ADD CONSTRAINT "Servicios Med_pkey" PRIMARY KEY (id_med);
+ I   ALTER TABLE ONLY public.serviciosm DROP CONSTRAINT "Servicios Med_pkey";
+       public            postgres    false    211            ë           2606    16699    servicio Servicios_pkey 
+   CONSTRAINT     \   ALTER TABLE ONLY public.servicio
+    ADD CONSTRAINT "Servicios_pkey" PRIMARY KEY (id_serv);
+ C   ALTER TABLE ONLY public.servicio DROP CONSTRAINT "Servicios_pkey";
+       public            postgres    false    214            â           2606    16679    sueldo Sueldo_pkey 
+   CONSTRAINT     Y   ALTER TABLE ONLY public.sueldo
+    ADD CONSTRAINT "Sueldo_pkey" PRIMARY KEY (id_sueldo);
+ >   ALTER TABLE ONLY public.sueldo DROP CONSTRAINT "Sueldo_pkey";
+       public            postgres    false    210            û           2620    24991    area cant_trab    TRIGGER     Å   CREATE TRIGGER cant_trab BEFORE INSERT OR UPDATE ON public.area FOR EACH ROW EXECUTE FUNCTION public.valida_cant_trabajadores();
+ '   DROP TRIGGER cant_trab ON public.area;
+       public          postgres    false    222    213            ú           2620    24987    empleado edad    TRIGGER     |   CREATE TRIGGER edad BEFORE INSERT OR UPDATE ON public.empleado FOR EACH ROW EXECUTE FUNCTION public.valida_edad_empleado();
+ &   DROP TRIGGER edad ON public.empleado;
+       public          postgres    false    220    209            ù           2620    24989    actividad horas_lab    TRIGGER     ~   CREATE TRIGGER horas_lab BEFORE INSERT OR UPDATE ON public.actividad FOR EACH ROW EXECUTE FUNCTION public.valida_horas_lab();
+ ,   DROP TRIGGER horas_lab ON public.actividad;
+       public          postgres    false    221    212            ó           2606    24966    actividad fk_id_area    FK CONSTRAINT     Å   ALTER TABLE ONLY public.actividad
+    ADD CONSTRAINT fk_id_area FOREIGN KEY (id_area) REFERENCES public.area(id_area) NOT VALID;
+ >   ALTER TABLE ONLY public.actividad DROP CONSTRAINT fk_id_area;
+       public          postgres    false    212    3215    213            ô           2606    24971    material fk_id_area    FK CONSTRAINT     Ä   ALTER TABLE ONLY public.material
+    ADD CONSTRAINT fk_id_area FOREIGN KEY (id_area) REFERENCES public.area(id_area) NOT VALID;
+ =   ALTER TABLE ONLY public.material DROP CONSTRAINT fk_id_area;
+       public          postgres    false    213    3215    215            ò           2606    24976    servicio fk_id_area    FK CONSTRAINT     Ä   ALTER TABLE ONLY public.servicio
+    ADD CONSTRAINT fk_id_area FOREIGN KEY (id_area) REFERENCES public.area(id_area) NOT VALID;
+ =   ALTER TABLE ONLY public.servicio DROP CONSTRAINT fk_id_area;
+       public          postgres    false    214    213    3215            î           2606    16705    sueldo fk_id_emp    FK CONSTRAINT        ALTER TABLE ONLY public.sueldo
+    ADD CONSTRAINT fk_id_emp FOREIGN KEY (id_emp) REFERENCES public.empleado(id_emp) NOT VALID;
+ :   ALTER TABLE ONLY public.sueldo DROP CONSTRAINT fk_id_emp;
+       public          postgres    false    209    210    3207            ö           2606    16713    Tiene Derecho fk_id_emp    FK CONSTRAINT     ~   ALTER TABLE ONLY public."Tiene Derecho"
+    ADD CONSTRAINT fk_id_emp FOREIGN KEY (id_emp) REFERENCES public.empleado(id_emp);
+ C   ALTER TABLE ONLY public."Tiene Derecho" DROP CONSTRAINT fk_id_emp;
+       public          postgres    false    3207    209    216            ñ           2606    16723    actividad fk_id_emp    FK CONSTRAINT     Ç   ALTER TABLE ONLY public.actividad
+    ADD CONSTRAINT fk_id_emp FOREIGN KEY (id_emp) REFERENCES public.empleado(id_emp) NOT VALID;
+ =   ALTER TABLE ONLY public.actividad DROP CONSTRAINT fk_id_emp;
+       public          postgres    false    3207    209    212            ï           2606    24981    serviciosm fk_id_emp    FK CONSTRAINT     É   ALTER TABLE ONLY public.serviciosm
+    ADD CONSTRAINT fk_id_emp FOREIGN KEY (id_emp) REFERENCES public.empleado(id_emp) NOT VALID;
+ >   ALTER TABLE ONLY public.serviciosm DROP CONSTRAINT fk_id_emp;
+       public          postgres    false    211    209    3207            õ           2606    16718    Tiene Derecho fk_id_med    FK CONSTRAINT     Ä   ALTER TABLE ONLY public."Tiene Derecho"
+    ADD CONSTRAINT fk_id_med FOREIGN KEY (id_med) REFERENCES public.serviciosm(id_med);
+ C   ALTER TABLE ONLY public."Tiene Derecho" DROP CONSTRAINT fk_id_med;
+       public          postgres    false    211    216    3211            4      xúã—„‚‚ ≈ ©      0      xúã—„‚‚ ≈ ©      1   "   xú3‰ÙMÃ+IÕÀÃÕLÕ+…Á4Ê44‡ä—„‚‚ m¶Î      -   ë   xú= A
+¬0@—ıÃ)r¡òÍZ*H°Æ‘ùõ°u∞Ij“të;πÍz1+àÀœ˚ˆÆÂNÊ7e8ßû√(—ug%l)Ç6∏ÖkêˇWzõú4‘àwºxÅÎüó)àÉÖ'‚Z0wﬂ\BÁ…rÜΩítÅ÷h†"ßÍyÍ9+®≈ˆ¬ô`S‡mÖàóA5s      3      xúã—„‚‚ ≈ ©      2      xúã—„‚‚ ≈ ©      /   %   xú3‰45Á444206≤44≤0Êˆ‰ÙÂ4‚ä—„‚‚ KC»      .   $   xú3‰42 N#KcC#Kc##N?N#Æ=... QH     
